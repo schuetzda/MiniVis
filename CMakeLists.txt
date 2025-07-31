@@ -28,8 +28,6 @@ qt_add_qml_module(appMiniVis
     QML_FILES
         main.qml
     RESOURCES
-        squircle.frag.spv
-        squircle.vert.spv
     NO_RESOURCE_TARGET_PATH
     SOURCES
 )

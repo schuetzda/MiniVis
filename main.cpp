@@ -12,7 +12,7 @@ int main(int argc, char *argv[])
     // Create a Vulkan instance
     QVulkanInstance vulkanInstance;
 #ifdef QT_DEBUG
-    vulkanInstance.setLayers({ "VK_LAYER_KHRONOS_validation", "VK_KHR_dynamic_renderinge" });
+    vulkanInstance.setLayers({ "VK_LAYER_KHRONOS_validation", "VK_KHR_dynamic_rendering" });
 #endif
     vulkanInstance.setApiVersion(QVersionNumber(1, 3, 0));
 
