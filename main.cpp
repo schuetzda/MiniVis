@@ -15,7 +15,7 @@ int main(int argc, char* argv[])
     QVulkanInstance vulkanInstance;
 
 #ifdef QT_DEBUG
-    vulkanInstance.setLayers({ "VK_LAYER_KHRONOS_validation" });
+    //vulkanInstance.setLayers({ "VK_LAYER_KHRONOS_validation" });
 #endif
 
     vulkanInstance.setApiVersion(QVersionNumber(1, 4, 0));

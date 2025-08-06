@@ -53,8 +53,8 @@ public:
         requires std::is_constructible_v<Component, Args...>
     void emplace(quint32 entity, Args&&... args)
     {
-        assert(sparseList[entity] == INVALID_ENTITY_ID);
-        assert(entity < sparseList.size());
+        Q_ASSERT(sparseList[entity] == INVALID_ENTITY_ID);
+        Q_ASSERT(entity < sparseList.size());
         denseList.emplace_back(entity);
         versions.emplace_back(0);
         sparseList[entity] = static_cast<quint32>(denseList.size() - 1);
@@ -73,8 +73,8 @@ public:
         requires std::is_move_constructible_v<Component>
     void emplace(quint32 entity, Component&& component)
     {
-        assert(sparseList[entity] == INVALID_ENTITY_ID);
-        assert(entity < sparseList.size());
+        Q_ASSERT(sparseList[entity] == INVALID_ENTITY_ID);
+        Q_ASSERT(entity < sparseList.size());
         denseList.emplace_back(entity);
         versions.emplace_back(0);
         sparseList[entity] = static_cast<quint32>(denseList.size() - 1);
@@ -92,8 +92,8 @@ public:
         requires std::is_copy_assignable_v<Component>
     void emplace(quint32 entity, Component& component)
     {
-        assert(sparseList[entity] == INVALID_ENTITY_ID);
-        assert(entity < sparseList.size());
+        Q_ASSERT(sparseList[entity] == INVALID_ENTITY_ID);
+        Q_ASSERT(entity < sparseList.size());
         denseList.emplace_back(entity);
         versions.emplace_back(0);
         sparseList[entity] = static_cast<quint32>(denseList.size() - 1);
@@ -204,7 +204,7 @@ public:
     template <typename Component>
     Component* getFromComponentHandle(const ComponentHandle& handle)
     {
-        assert(TypeIDGenerator::type<Component>() == handle.typeID);
+        Q_ASSERT(TypeIDGenerator::type<Component>() == handle.typeID);
         const quint32 denseListIndex = sparseList[handle.entity];
         const bool validHandle = denseListIndex < denseList.size() || handle.version != versions[denseListIndex];
         return validHandle ? componentTable.getComponent<Component>(
