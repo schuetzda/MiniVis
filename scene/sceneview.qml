@@ -3,61 +3,88 @@ import QtQuick.Controls
 import QtQuick.Controls.Basic
 import QtQuick.Layouts
 
-TreeView {
-    id: sceneView
-    model: sceneTreeModel
-    implicitHeight: parent.height
-    implicitWidth: parent.width
-    topMargin: 5
+Item {
+    id: sceneViewContainer
+    width: parent.width
+    height: parent.height
 
     property int selectedIndex: -1
     property int selectedRow: -1
 
-    delegate: Item {
-        id: treeItem
-        implicitWidth: sceneView.width
-        implicitHeight: 30
+    MouseArea {
+        id: sceneViewClickArea
+        anchors.fill: parent
+        acceptedButtons: Qt.RightButton
+        z: -1
+        onClicked: mouse => {
+                       const mouseYOffset = 5
+                       //Horizontal offset between ContextMenu and mouse position
+                       console.log("Click")
+                       if (mouse.button === Qt.RightButton) {
+                           selectedIndex = -1
+                           contextMenu.deleteEnabled = false
+                           contextMenu.popup(mouseX, mouseY + mouseYOffset)
+                       }
+                   }
+    }
 
-        required property int row
+    TreeView {
+        id: sceneView
+        model: sceneTreeModel
+        implicitHeight: parent.height
+        implicitWidth: parent.width
+        topMargin: 5
 
-        Rectangle {
-            anchors.fill: parent
-            color: sceneView.selectedIndex === model.index ? "#444" : "transparent"
-            Row {
-                leftPadding: 5
-                anchors.verticalCenter: parent.verticalCenter
+        delegate: Item {
+            id: sceneItem
+            implicitWidth: sceneView.width
+            implicitHeight: 30
 
-                Image {
-                    source: icon
-                    width: 24
-                    height: 24
-                }
+            required property int row
 
-                Text {
-                    text: model.display
-                    color: "white"
-                    font.pixelSize: 18
-                    font.bold: true
+            Rectangle {
+                anchors.fill: parent
+                color: sceneViewContainer.selectedIndex === model.index ? "#444" : "transparent"
+                Row {
+                    leftPadding: 5
+                    anchors.verticalCenter: parent.verticalCenter
+
+                    Image {
+                        source: icon
+                        width: 24
+                        height: 24
+                    }
+
+                    Text {
+                        text: model.display
+                        color: "white"
+                        font.pixelSize: 18
+                        font.bold: true
+                    }
                 }
             }
-        }
-        MouseArea {
-            id: clickArea
-            anchors.fill: parent
-            acceptedButtons: Qt.LeftButton | Qt.RightButton
-            onClicked: (mouse)=> {
-                sceneView.selectedIndex = model.index
-                sceneView.selectedRow = row
-                const mouseYOffset = 5; //Horizontal offset between ContextMenu and mouse position
-                if (mouse.button === Qt.RightButton) {
-                    contextMenu.deleteEnabled = model.type !== 2
-                    contextMenu.popup(mouseX, mouseY+ mouseYOffset)
-                }
+            MouseArea {
+                id: sceneItemClickArea
+                anchors.fill: parent
+                acceptedButtons: Qt.LeftButton | Qt.RightButton
+                onClicked: mouse => {
+                               sceneViewContainer.selectedIndex = model.index
+                               sceneViewContainer.selectedRow = row
+                               const mouseYOffset = 5
+                               //Horizontal offset between ContextMenu and mouse position
+                               if (mouse.button === Qt.RightButton) {
+                                   contextMenu.deleteEnabled = model.type !== 2
+                                   contextMenu.popup(mouseX,
+                                                     mouseY + mouseYOffset)
+                               }
+                           }
             }
         }
-        Menu {
-            id: contextMenu
-            property bool deleteEnabled: true
+    }
+
+    Menu {
+        id: contextMenu
+        property bool deleteEnabled: true
         MenuItem {
             text: "Add Node"
             onTriggered: {
@@ -68,11 +95,8 @@ TreeView {
             text: "Delete"
             enabled: contextMenu.deleteEnabled
             onTriggered: {
-                console.log("Delete")
-                sceneTreeModel.removeNode(sceneView.selectedRow)
-                sceneView.selectedRow-1
+                sceneTreeModel.removeNode(sceneViewContainer.selectedRow)
             }
-        }
         }
     }
 }
