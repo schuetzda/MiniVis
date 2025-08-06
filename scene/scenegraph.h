@@ -7,9 +7,9 @@
 #include <vector>
 
 enum class SceneType {
-    Model,
-    Light,
-    Camera
+    Model = 0,
+    Light = 1,
+    Camera = 2
 };
 
 struct SceneNode {

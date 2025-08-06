@@ -24,6 +24,8 @@ public:
     int columnCount(const QModelIndex& index) const override;
     QVariant data(const QModelIndex& index, int role) const override;
     QHash<int, QByteArray> roleNames() const override;
+    bool setData(const QModelIndex& index, const QVariant& value, int role=Qt::EditRole) override;
+    Q_INVOKABLE void removeNode(quint32 row);
 
 private:
     SceneData sceneData;

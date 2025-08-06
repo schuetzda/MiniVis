@@ -52,6 +52,18 @@ QVariant SceneTreeModel::data(const QModelIndex& index, int role) const
             return QStringLiteral("qrc:/scene/icons/camera.png");
             break;
         }
+    case Qt::UserRole + 2:
+        switch (node->type) {
+        case SceneType::Model:
+            return static_cast<int>(SceneType::Model);
+            break;
+        case SceneType::Light:
+            return static_cast<int>(SceneType::Light);
+            break;
+        case SceneType::Camera:
+            return static_cast<int>(SceneType::Camera);
+            break;
+        }
     }
 
     return QVariant();
@@ -61,6 +73,24 @@ QHash<int, QByteArray> SceneTreeModel::roleNames() const
 {
     auto roles = QAbstractItemModel::roleNames();
     roles[Qt::UserRole + 1] = "icon";
+    roles[Qt::UserRole + 2] = "type";
     return roles;
+}
+
+bool SceneTreeModel::setData(const QModelIndex& index, const QVariant& value, int role)
+{
+
+}
+
+void SceneTreeModel::removeNode(quint32 row)
+{
+    if (row < 0 || row >= sceneData.nodes.size()) {
+        qWarning() << "Trying to delete a node out of index range";
+        return;
+    }
+
+    beginRemoveRows(QModelIndex(), row, row);
+    sceneData.nodes.erase(sceneData.nodes.begin() + row);
+    endRemoveRows();
 }
 }

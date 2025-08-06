@@ -10,12 +10,15 @@ TreeView {
     implicitWidth: parent.width
     topMargin: 5
 
-    property var selectedIndex: null
+    property int selectedIndex: -1
+    property int selectedRow: -1
 
     delegate: Item {
         id: treeItem
         implicitWidth: sceneView.width
         implicitHeight: 30
+
+        required property int row
 
         Rectangle {
             anchors.fill: parent
@@ -44,14 +47,17 @@ TreeView {
             acceptedButtons: Qt.LeftButton | Qt.RightButton
             onClicked: (mouse)=> {
                 sceneView.selectedIndex = model.index
+                sceneView.selectedRow = row
                 const mouseYOffset = 5; //Horizontal offset between ContextMenu and mouse position
                 if (mouse.button === Qt.RightButton) {
+                    contextMenu.deleteEnabled = model.type !== 2
                     contextMenu.popup(mouseX, mouseY+ mouseYOffset)
                 }
             }
         }
         Menu {
             id: contextMenu
+            property bool deleteEnabled: true
         MenuItem {
             text: "Add Node"
             onTriggered: {
@@ -60,8 +66,11 @@ TreeView {
         }
         MenuItem {
             text: "Delete"
+            enabled: contextMenu.deleteEnabled
             onTriggered: {
                 console.log("Delete")
+                sceneTreeModel.removeNode(sceneView.selectedRow)
+                sceneView.selectedRow-1
             }
         }
         }
