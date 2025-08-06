@@ -6,11 +6,11 @@
 
 #include <QtQuick/QQuickItem>
 
+namespace mini {
 class VulkanTextureNode;
 
 //! [1]
-class VulkanTextureItem : public QQuickItem
-{
+class VulkanTextureItem : public QQuickItem {
     Q_OBJECT
     QML_ELEMENT
 
@@ -18,8 +18,9 @@ public:
     VulkanTextureItem();
 
 protected:
-    QSGNode *updatePaintNode(QSGNode *, UpdatePaintNodeData *) override;
-    void geometryChange(const QRectF &newGeometry, const QRectF &oldGeometry) override;
+    QSGNode* updatePaintNode(QSGNode*, UpdatePaintNodeData*) override;
+    void geometryChange(const QRectF& newGeometry,
+        const QRectF& oldGeometry) override;
 
 private slots:
     void invalidateSceneGraph();
@@ -27,8 +28,9 @@ private slots:
 private:
     void releaseResources() override;
 
-    VulkanTextureNode *m_node = nullptr;
+    VulkanTextureNode* m_node = nullptr;
 };
+} // namespace mini
 //! [1]
 
 #endif // VULKANTEXTUREIMPORT_H

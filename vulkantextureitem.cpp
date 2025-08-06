@@ -1,20 +1,20 @@
 #include "vulkantextureitem.h"
 #include "renderer/vulkanrenderer.h"
-#include <QtQuick/QQuickWindow>
-#include <QtQuick/QSGTextureProvider>
-#include <QtQuick/QSGSimpleTextureNode>
 #include <QtGui/QVulkanFunctions>
-#include "renderer/vulkanrenderer.h"
+#include <QtQuick/QQuickWindow>
+#include <QtQuick/QSGSimpleTextureNode>
+#include <QtQuick/QSGTextureProvider>
 
-class VulkanTextureNode : public QSGTextureProvider, public QSGSimpleTextureNode
-{
+namespace mini {
+class VulkanTextureNode : public QSGTextureProvider,
+                          public QSGSimpleTextureNode {
     Q_OBJECT
 
 public:
-    VulkanTextureNode(QQuickItem *item);
+    VulkanTextureNode(QQuickItem* item);
     ~VulkanTextureNode() override;
 
-    QSGTexture *texture() const override;
+    QSGTexture* texture() const override;
 
     void sync();
 
@@ -26,46 +26,47 @@ private:
     void releaseNativeTexture();
     void initialize();
 
-    QQuickItem *m_item;
-    QQuickWindow *m_window;
+    QQuickItem* m_item;
+    QQuickWindow* m_window;
     QSize m_pixelSize;
     qreal m_dpr;
 
     bool m_initialized = false;
 
-    QVulkanInstance *m_inst = nullptr;
+    QVulkanInstance* m_inst = nullptr;
     VkPhysicalDevice m_physDev = VK_NULL_HANDLE;
     VkDevice m_dev = VK_NULL_HANDLE;
-    QVulkanDeviceFunctions *m_devFuncs = nullptr;
-    QVulkanFunctions *m_funcs = nullptr;
+    QVulkanDeviceFunctions* m_devFuncs = nullptr;
+    QVulkanFunctions* m_funcs = nullptr;
 
     VkImage m_output = VK_NULL_HANDLE;
     VkImageLayout m_outputLayout = VK_IMAGE_LAYOUT_UNDEFINED;
     VkDeviceMemory m_outputMemory = VK_NULL_HANDLE;
     VkImageView m_outputView = VK_NULL_HANDLE;
-    QSGTexture *m_sgWrapperTexture = nullptr;
+    QSGTexture* m_sgWrapperTexture = nullptr;
 
     VulkanRenderer m_renderer;
 };
 
-VulkanTextureItem::VulkanTextureItem()
-{
-    setFlag(ItemHasContents, true);
-}
+VulkanTextureItem::VulkanTextureItem() { setFlag(ItemHasContents, true); }
 
-void VulkanTextureItem::invalidateSceneGraph() // called on the render thread when the scenegraph is invalidated
+void VulkanTextureItem::invalidateSceneGraph() // called on the render thread
+                                               // when the scenegraph is
+                                               // invalidated
 {
     m_node = nullptr;
 }
 
-void VulkanTextureItem::releaseResources() // called on the gui thread if the item is removed from scene
+void VulkanTextureItem::releaseResources() // called on the gui thread if the
+                                           // item is removed from scene
 {
     m_node = nullptr;
 }
 
-QSGNode *VulkanTextureItem::updatePaintNode(QSGNode *node, UpdatePaintNodeData *)
+QSGNode* VulkanTextureItem::updatePaintNode(QSGNode* node,
+    UpdatePaintNodeData*)
 {
-    VulkanTextureNode *n = static_cast<VulkanTextureNode *>(node);
+    VulkanTextureNode* n = static_cast<VulkanTextureNode*>(node);
 
     if (!n && (width() <= 0 || height() <= 0))
         return nullptr;
@@ -86,7 +87,8 @@ QSGNode *VulkanTextureItem::updatePaintNode(QSGNode *node, UpdatePaintNodeData *
     return n;
 }
 
-void VulkanTextureItem::geometryChange(const QRectF &newGeometry, const QRectF &oldGeometry)
+void VulkanTextureItem::geometryChange(const QRectF& newGeometry,
+    const QRectF& oldGeometry)
 {
     QQuickItem::geometryChange(newGeometry, oldGeometry);
 
@@ -94,11 +96,12 @@ void VulkanTextureItem::geometryChange(const QRectF &newGeometry, const QRectF &
         update();
 }
 
-VulkanTextureNode::VulkanTextureNode(QQuickItem *item)
+VulkanTextureNode::VulkanTextureNode(QQuickItem* item)
     : m_item(item)
 {
     m_window = m_item->window();
-    connect(m_window, &QQuickWindow::beforeRendering, this, &VulkanTextureNode::render);
+    connect(m_window, &QQuickWindow::beforeRendering, this,
+        &VulkanTextureNode::render);
     connect(m_window, &QQuickWindow::screenChanged, this, [this]() {
         if (m_window->effectiveDevicePixelRatio() != m_dpr)
             m_item->update();
@@ -111,7 +114,7 @@ VulkanTextureNode::~VulkanTextureNode()
     releaseNativeTexture();
 }
 
-QSGTexture *VulkanTextureNode::texture() const
+QSGTexture* VulkanTextureNode::texture() const
 {
     return QSGSimpleTextureNode::texture();
 }
@@ -127,8 +130,8 @@ void VulkanTextureNode::createNativeTexture()
     imageInfo.flags = 0;
     imageInfo.imageType = VK_IMAGE_TYPE_2D;
     imageInfo.format = VK_FORMAT_R8G8B8A8_UNORM;
-    imageInfo.extent.width = uint32_t(m_pixelSize.width());
-    imageInfo.extent.height = uint32_t(m_pixelSize.height());
+    imageInfo.extent.width = quint32(m_pixelSize.width());
+    imageInfo.extent.height = quint32(m_pixelSize.height());
     imageInfo.extent.depth = 1;
     imageInfo.mipLevels = 1;
     imageInfo.arrayLayers = 1;
@@ -144,7 +147,7 @@ void VulkanTextureNode::createNativeTexture()
     quint32 memIndex = 0;
     VkPhysicalDeviceMemoryProperties physDevMemProps;
     m_funcs->vkGetPhysicalDeviceMemoryProperties(m_physDev, &physDevMemProps);
-    for (uint32_t i = 0; i < physDevMemProps.memoryTypeCount; ++i) {
+    for (quint32 i = 0; i < physDevMemProps.memoryTypeCount; ++i) {
         if (!(memReq.memoryTypeBits & (1 << i)))
             continue;
         if (physDevMemProps.memoryTypes[i].propertyFlags & VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT) {
@@ -153,12 +156,8 @@ void VulkanTextureNode::createNativeTexture()
         }
     }
 
-    VkMemoryAllocateInfo allocInfo = {
-        VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO,
-        nullptr,
-        memReq.size,
-        memIndex
-    };
+    VkMemoryAllocateInfo allocInfo = { VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO,
+        nullptr, memReq.size, memIndex };
 
     m_devFuncs->vkAllocateMemory(m_dev, &allocInfo, nullptr, &m_outputMemory);
     m_devFuncs->vkBindImageMemory(m_dev, m_output, m_outputMemory, 0);
@@ -222,10 +221,8 @@ void VulkanTextureNode::sync()
         delete texture();
         releaseNativeTexture();
         createNativeTexture();
-        m_sgWrapperTexture = QNativeInterface::QSGVulkanTexture::fromNative(m_output,
-                                                                            m_outputLayout,
-                                                                            m_window,
-                                                                            m_pixelSize);
+        m_sgWrapperTexture = QNativeInterface::QSGVulkanTexture::fromNative(
+            m_output, m_outputLayout, m_window, m_pixelSize);
         setTexture(m_sgWrapperTexture);
     }
 }
@@ -234,39 +231,42 @@ void VulkanTextureNode::initialize()
 {
     m_initialized = true;
 
-    QSGRendererInterface *rif = m_window->rendererInterface();
-    m_inst = reinterpret_cast<QVulkanInstance *>(
+    QSGRendererInterface* rif = m_window->rendererInterface();
+    m_inst = reinterpret_cast<QVulkanInstance*>(
         rif->getResource(m_window, QSGRendererInterface::VulkanInstanceResource));
     Q_ASSERT(m_inst && m_inst->isValid());
 
-    m_physDev = *static_cast<VkPhysicalDevice *>(rif->getResource(m_window, QSGRendererInterface::PhysicalDeviceResource));
-    m_dev = *static_cast<VkDevice *>(rif->getResource(m_window, QSGRendererInterface::DeviceResource));
+    m_physDev = *static_cast<VkPhysicalDevice*>(
+        rif->getResource(m_window, QSGRendererInterface::PhysicalDeviceResource));
+    m_dev = *static_cast<VkDevice*>(
+        rif->getResource(m_window, QSGRendererInterface::DeviceResource));
     Q_ASSERT(m_physDev && m_dev);
 
     m_devFuncs = m_inst->deviceFunctions(m_dev);
     m_funcs = m_inst->functions();
     Q_ASSERT(m_devFuncs && m_funcs);
 
-    //raytracing.init(m_physDev, m_dev, m_funcs, m_devFuncs);
+    // raytracing.init(m_physDev, m_dev, m_funcs, m_devFuncs);
 }
 
-void VulkanTextureNode::render() // called before Qt Quick starts recording its main render pass
+void VulkanTextureNode::render() // called before Qt Quick starts recording its
+                                 // main render pass
 {
     if (!m_initialized)
         return;
 
-    QSGRendererInterface *rif = m_window->rendererInterface();
+    QSGRendererInterface* rif = m_window->rendererInterface();
 
     const uint currentFrameSlot = m_window->graphicsStateInfo().currentFrameSlot;
 
-    VkCommandBuffer cmdBuf = *reinterpret_cast<VkCommandBuffer *>(
+    VkCommandBuffer cmdBuf = *reinterpret_cast<VkCommandBuffer*>(
         rif->getResource(m_window, QSGRendererInterface::CommandListResource));
 
-    /*m_outputLayout = raytracing.doIt(m_inst, m_physDev, m_dev, m_devFuncs, m_funcs,
-                                     cmdBuf, m_output, m_outputLayout, m_outputView,
-                                     currentFrameSlot, m_pixelSize);*/
+    /*m_outputLayout = raytracing.doIt(m_inst, m_physDev, m_dev, m_devFuncs,
+       m_funcs, cmdBuf, m_output, m_outputLayout, m_outputView, currentFrameSlot,
+       m_pixelSize);*/
 
-    //m_sgWrapperTexture->rhiTexture()->setNativeLayout(m_outputLayout);
+    // m_sgWrapperTexture->rhiTexture()->setNativeLayout(m_outputLayout);
 }
-
+} // namespace mini
 #include "vulkantextureitem.moc"

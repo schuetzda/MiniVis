@@ -4,6 +4,7 @@ import QtQuick.Layouts
 import QtQuick.Controls.Material
 
 import MiniVis
+import "scene"
 Rectangle {
     anchors.fill: parent
     Material.theme: Material.Dark
@@ -169,9 +170,9 @@ Rectangle {
                         Layout.preferredHeight: 50
 
                         TabButton {
-                            text: qsTr("Color")
+                            text: qsTr("Scene")
                             Layout.fillWidth: true
-                        }
+                       }
                         TabButton {
                             text: qsTr("Export")
                             Layout.fillWidth: true
@@ -190,6 +191,9 @@ Rectangle {
                             height: 2
                             width: parent.width
                             color: "darkgray"
+                        }
+                        SceneView {
+                            anchors.fill: parent
                         }
                     }
                 }
