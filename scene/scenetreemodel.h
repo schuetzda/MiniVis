@@ -11,21 +11,20 @@ class SceneTreeModel : public QAbstractItemModel {
 
 public:
     explicit SceneTreeModel(QObject* parent = nullptr)
-        : QAbstractItemModel(parent)
+        : QAbstractItemModel(parent), sceneData(0)
     {
-        sceneData.name = "Hello";
-        sceneData.nodes.emplace_back("Camera", 1, SceneType::Camera);
-        sceneData.nodes.emplace_back("My Minifigure", 1, SceneType::Model);
-        sceneData.nodes.emplace_back("Light", 1, SceneType::Light);
+        sceneData.addNode(SceneType::Model);
+        sceneData.addNode(SceneType::Light);
     }
+
     QModelIndex index(int row, int column, const QModelIndex& parent = QModelIndex()) const override;
     QModelIndex parent(const QModelIndex& index) const override;
     int rowCount(const QModelIndex& index) const override;
     int columnCount(const QModelIndex& index) const override;
     QVariant data(const QModelIndex& index, int role) const override;
     QHash<int, QByteArray> roleNames() const override;
-    bool setData(const QModelIndex& index, const QVariant& value, int role=Qt::EditRole) override;
-    Q_INVOKABLE void removeNode(quint32 row);
+    Q_INVOKABLE void removeNode(int row);
+    Q_INVOKABLE void addNode(quint32 type);
 
 private:
     SceneData sceneData;

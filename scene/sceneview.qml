@@ -85,10 +85,20 @@ Item {
     Menu {
         id: contextMenu
         property bool deleteEnabled: true
-        MenuItem {
-            text: "Add Node"
-            onTriggered: {
-                console.log("Add Node")
+        Menu {
+            title: "Add Node:"
+            MenuItem {
+                text: "Model"
+                onTriggered: {
+                    sceneTreeModel.addNode(0)
+                    console.log("Add")
+                }
+            }
+            MenuItem {
+                text: "Light"
+                onTriggered: {
+                    sceneTreeModel.addNode(1)
+                }
             }
         }
         MenuItem {
