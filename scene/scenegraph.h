@@ -49,7 +49,6 @@ public:
             qWarning() << "Type not supported";
             break;
         }
-        qDebug()<<nodes.size();
     }
 
     const SceneNode* get(quint32 index) const

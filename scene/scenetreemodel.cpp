@@ -4,7 +4,7 @@ namespace mini {
 QModelIndex SceneTreeModel::index(int row, int column, const QModelIndex& parent) const
 {
     if (!parent.isValid() && row >= 0 && row < sceneData.size()) {
-        qDebug() << row;
+        // Accessing data in the data() function will be done over the row counter
         return createIndex(row, column, nullptr);
     }
     return QModelIndex();

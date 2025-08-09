@@ -116,6 +116,7 @@ Rectangle {
                 SplitView.preferredWidth: 400
                 SplitView.minimumWidth: 150
                 SplitView.preferredHeight: parent.height
+
                 color: Material.background
 
                 ColumnLayout {
