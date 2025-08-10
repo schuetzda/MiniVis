@@ -101,7 +101,8 @@ Item {
                                            1, 1)
                                        if (mouse.button === Qt.RightButton) {
                                            contextMenu.deleteEnabled = model.type !== 2
-                                           contextMenu.popup(mouse.x, mouse.y)
+                                           const mouseYInSceneView = sceneItem.implicitHeight * row + mouse.y;
+                                           contextMenu.popup(mouse.x, mouseYInSceneView)
                                        }
                                    }
                     }
