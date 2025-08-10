@@ -146,6 +146,7 @@ Rectangle {
                         color: Material.background
 
                         Rectangle {
+                            id: propertiesTopBorder
                             anchors.top: parent.top
                             anchors.left: parent.left
                             anchors.right: parent.right
@@ -154,7 +155,12 @@ Rectangle {
                             color: "darkgray"
                         }
                         SceneView {
-                            anchors.fill: parent
+                            anchors.left: parent.left
+                            anchors.bottom: parent.bottom
+                            anchors.right: parent.right
+                            height: parent.height-propertiesTopBorder.height
+                            color: Material.background
+                            propertiesColor: "#303030"
                         }
                     }
                 }

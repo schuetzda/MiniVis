@@ -5,8 +5,14 @@ import QtQuick.Layouts
 
 Item {
     id: sceneViewContainer
-    width: parent.width
-    height: parent.height
+
+    width: (Layout.preferredWidth
+            !== undefined) ? Layout.preferredWidth : (parent ? parent.width : 0)
+    height: (Layout.preferredHeight
+             !== undefined) ? Layout.preferredHeight : (parent ? parent.height : 0)
+
+    property color color: "white"
+    property color propertiesColor: "white"
 
     property int selectedIndex: -1
     property int selectedRow: -1
@@ -31,20 +37,17 @@ Item {
         handle: propertiesSplitDelegate
 
         Rectangle {
-
             id: treeViewContainer
             SplitView.fillHeight: true
             SplitView.fillWidth: true
-            color: "green"
+            color: sceneViewContainer.color
 
+            //Handle right clicks that are not directly on a sceneItem (Left clicks are handled by the TapHandler)
             MouseArea {
                 id: sceneViewClickArea
                 anchors.fill: parent
-                acceptedButtons: Qt.LeftButton | Qt.RightButton
-                z: 1
+                acceptedButtons: Qt.RightButton
                 onClicked: mouse => {
-                               sceneViewContainer.selectedIndex = -1
-                               propertiesContainer.hidePropertiesContainer()
                                if (mouse.button === Qt.RightButton) {
                                    contextMenu.deleteEnabled = false
                                    contextMenu.popup(mouse.x, mouse.y)
@@ -56,17 +59,12 @@ Item {
                 id: sceneView
                 model: sceneTreeModel
                 topMargin: 5
-                anchors.top: parent.top
-                anchors.left: parent.left
-                anchors.right: parent.right
-                height: 30 * 3
-                z: 1 //Put in front of sceneViewClickArea
+                anchors.fill: parent
 
                 delegate: Item {
                     id: sceneItem
                     implicitWidth: sceneView.width
                     implicitHeight: 30
-                    z:2
                     required property int row
 
                     Rectangle {
@@ -91,6 +89,7 @@ Item {
                             }
                         }
                     }
+                    //Handle mouse click on an sceneItem
                     MouseArea {
                         id: sceneItemClickArea
                         anchors.fill: parent
@@ -98,7 +97,6 @@ Item {
                         onClicked: mouse => {
                                        sceneViewContainer.selectedIndex = model.index
                                        sceneViewContainer.selectedRow = row
-                                       //Horizontal offset between ContextMenu and mouse position
                                        propertiesContainer.showPropertiesContainer(
                                            1, 1)
                                        if (mouse.button === Qt.RightButton) {
@@ -106,6 +104,14 @@ Item {
                                            contextMenu.popup(mouse.x, mouse.y)
                                        }
                                    }
+                    }
+                }
+                // Handle mouse click not directly on a scene item
+                TapHandler {
+                    target: sceneView.contentItem
+                    onTapped: function (event) {
+                        sceneViewContainer.selectedIndex = -1
+                        propertiesContainer.hidePropertiesContainer()
                     }
                 }
             }
@@ -134,6 +140,7 @@ Item {
                     onTriggered: {
                         sceneTreeModel.removeNode(
                                     sceneViewContainer.selectedRow)
+                        propertiesContainer.hidePropertiesContainer()
                     }
                 }
             }
@@ -142,8 +149,8 @@ Item {
             id: propertiesContainer
             SplitView.preferredHeight: 0
             SplitView.fillWidth: true
-            color: "blue"
             visible: false
+            color: sceneViewContainer.propertiesColor
             property int containerHeight: 400
 
             function showPropertiesContainer(sceneType, row) {
