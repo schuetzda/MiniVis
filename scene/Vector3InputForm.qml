@@ -22,19 +22,19 @@ Item {
         DoubleSpinBox {
             id: xTextField
             realValue: xValue
-            decimals: 2
+            decimals: 1
             Layout.preferredWidth: 90
         }
         DoubleSpinBox {
             id: yTextField
             realValue: yValue
-            decimals: 2
+            decimals: 1
             Layout.preferredWidth: 90
         }
         DoubleSpinBox {
             id: zTextField
             realValue: zValue
-            decimals: 2
+            decimals: 1
             Layout.preferredWidth: 90
         }
     }

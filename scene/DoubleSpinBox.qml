@@ -7,11 +7,12 @@ SpinBox {
     from: decimalToInt(-1000)
     to: decimalToInt(1000)
     editable: true
-    stepSize: decimalFactor
+    stepSize: realStepSize*decimalFactor
 
     property int decimals: 2
-    property real realValue: value / 100
     readonly property int decimalFactor: Math.pow(10, decimals)
+    property real realValue: value / decimalFactor
+    property real realStepSize: 0.1
 
     function decimalToInt(decimal) {
         return decimal * decimalFactor
@@ -25,10 +26,10 @@ SpinBox {
     }
 
     textFromValue: function (value, locale) {
-        return Number(value / decimalFactor).toLocaleString(Qt.locale("en_US"), 'f',
+        return (value / decimalFactor).toLocaleString(locale, 'f',
                                                             doubleSpinBox.decimals)
     }
     valueFromText: function (text, locale) {
-        return Math.round(Number.fromLocaleString(Qt.locale("en_US"), text) * decimalFactor)
+        return Math.round(Number.fromLocaleString(locale, text) * decimalFactor)
     }
 }
