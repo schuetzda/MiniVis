@@ -101,8 +101,10 @@ Item {
                                            1, 1)
                                        if (mouse.button === Qt.RightButton) {
                                            contextMenu.deleteEnabled = model.type !== 2
-                                           const mouseYInSceneView = sceneItem.implicitHeight * row + mouse.y;
-                                           contextMenu.popup(mouse.x, mouseYInSceneView)
+                                           const mouseYInSceneView = sceneItem.implicitHeight
+                                           * row + mouse.y
+                                           contextMenu.popup(mouse.x,
+                                                             mouseYInSceneView)
                                        }
                                    }
                     }
@@ -141,6 +143,7 @@ Item {
                     onTriggered: {
                         sceneTreeModel.removeNode(
                                     sceneViewContainer.selectedRow)
+                        sceneViewContainer.selectedIndex = -1
                         propertiesContainer.hidePropertiesContainer()
                     }
                 }
@@ -169,6 +172,38 @@ Item {
                     propertiesSplitView.splitDelegateInstance.height = 0
                     propertiesSplitView.splitDelegateInstance.implicitHeight = 0
                     propertiesContainer.visible = false
+                }
+            }
+
+            Row {
+                anchors.fill: parent
+                anchors.margins: 20
+                spacing: 8
+                layoutDirection: Qt.LeftToRight
+
+                Vector3InputForm {
+                    width: 100
+                    height: 50
+                    xValue: 0
+                    yValue: 0
+                    zValue: 0
+                    label: "Location"
+                }
+                Vector3InputForm {
+                    width: 100
+                    height: 50
+                    xValue: 0
+                    yValue: 0
+                    zValue: 0
+                    label: "Rotation"
+                }
+                Vector3InputForm {
+                    width: 100
+                    height: 50
+                    xValue: 0
+                    yValue: 0
+                    zValue: 0
+                    label: "Scale"
                 }
             }
         }

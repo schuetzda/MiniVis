@@ -42,6 +42,8 @@ qt_add_qml_module(appMiniVis
     SOURCES scene/camera.h
     QML_FILES scene/SceneView.qml
     SOURCES scene/scenetreemodel.h scene/scenetreemodel.cpp
+    QML_FILES scene/Vector3InputForm.qml
+    QML_FILES scene/DoubleSpinBox.qml
 )
 set_target_properties(appMiniVis PROPERTIES
     MACOSX_BUNDLE_BUNDLE_VERSION ${PROJECT_VERSION}
