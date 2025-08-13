@@ -4,6 +4,7 @@
 #ifndef VULKANTEXTUREIMPORT_H
 #define VULKANTEXTUREIMPORT_H
 
+#include "ecs/Registry.h"
 #include <QtQuick/QQuickItem>
 
 namespace mini {
@@ -14,8 +15,19 @@ class VulkanTextureItem : public QQuickItem {
     Q_OBJECT
     QML_ELEMENT
 
+    Q_PROPERTY(mini::Registry* registry READ registry WRITE setRegistry NOTIFY registryChanged)
+
 public:
     VulkanTextureItem();
+
+    void setRegistry(Registry* r)
+    {
+        m_registry = r;
+    }
+
+    Registry* registry() const { return m_registry; }
+signals:
+    void registryChanged();
 
 protected:
     QSGNode* updatePaintNode(QSGNode*, UpdatePaintNodeData*) override;
@@ -29,6 +41,7 @@ private:
     void releaseResources() override;
 
     VulkanTextureNode* m_node = nullptr;
+    Registry* m_registry = nullptr;
 };
 } // namespace mini
 //! [1]

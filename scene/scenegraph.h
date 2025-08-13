@@ -1,10 +1,13 @@
 #ifndef SCENEGRAPH_H
 #define SCENEGRAPH_H
 
+#include "ecs/Registry.h"
+#include "scenecomponents.h"
 #include <qtypes.h>
 #include <scene/camera.h>
 #include <vector>
 
+namespace mini {
 enum class SceneType {
     Model = 0,
     Light = 1,
@@ -19,8 +22,14 @@ struct SceneNode {
 
 class SceneData {
 public:
-    SceneData(quint32 cameraEntity)
+    SceneData(Registry& r)
+        : registry(r)
     {
+        registry.initNewComponent<QuaternionCamera>(1);
+        registry.initNewComponent<RenderLight>(5);
+        registry.initNewComponent<RenderModel>(5);
+        quint32 cameraEntity = registry.registerEntity();
+        registry.emplace<QuaternionCamera>(cameraEntity);
         nodes.emplace_back("Camera", cameraEntity, SceneType::Camera);
     }
 
@@ -33,15 +42,21 @@ public:
     {
         switch (type) {
         case SceneType::Light:
+        {
             lightCount++;
-            // TODO Create a Light Object
-            nodes.emplace_back(QString("Light%1").arg(lightCount), 1, type);
+            quint32 lightEntity = registry.registerEntity();
+            registry.emplace<RenderLight>(lightEntity);
+            nodes.emplace_back(QString("Light%1").arg(lightCount), lightEntity, type);
             break;
+        }
         case SceneType::Model:
+        {
             modelCount++;
-            // TODO Create Model Object
-            nodes.emplace_back(QString("Model%1").arg(modelCount), 1, type);
+            quint32 modelEntity = registry.registerEntity();
+            registry.emplace<RenderModel>(modelEntity);
+            nodes.emplace_back(QString("Model%1").arg(modelCount), modelEntity, type);
             break;
+        }
         case SceneType::Camera:
             qWarning() << "Lights can not be added to a Scene. Instead edit the existing light source.";
             break;
@@ -53,9 +68,43 @@ public:
 
     const SceneNode* get(quint32 index) const
     {
-        if(index >= nodes.size())
+        if (index >= nodes.size())
             return nullptr;
         return &nodes[index];
+    }
+
+    QMatrix4x4* getMatrix(quint32 index)
+    {
+        if (index > size())
+        {
+            qWarning() << "Scenegraph getMatrix: index out of bounds";
+            return nullptr;
+        }
+        quint32 entityID = nodes[index].entityID;
+        switch (nodes[index].type) {
+        case SceneType::Light:
+        {
+            RenderLight* light = registry.getComponent<RenderLight>(entityID);
+            return &light->transform;
+            break;
+        }
+        case SceneType::Model:
+        {
+            RenderModel* model = registry.getComponent<RenderModel>(entityID);
+            return &model->transform;
+            break;
+        }
+        case SceneType::Camera:
+        {
+            QuaternionCamera* camera = registry.getComponent<QuaternionCamera>(entityID);
+            return camera->getViewPtr();
+            break;
+        }
+        default:
+            qWarning() << "Type not supported";
+            break;
+        }
+        return nullptr;
     }
 
     quint64 size() const
@@ -70,9 +119,10 @@ public:
 
 private:
     QString name;
-    std::vector<SceneNode> nodes;
-    quint32 modelCount;
-    quint32 lightCount;
+    std::vector<SceneNode> nodes {};
+    quint32 modelCount { 0 };
+    quint32 lightCount { 0 };
+    Registry& registry;
 };
-
+}
 #endif // SCENEGRAPH_H

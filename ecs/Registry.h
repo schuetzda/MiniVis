@@ -1,5 +1,6 @@
 #ifndef REGISTRY_H
 #define REGISTRY_H
+#include <QObject>
 #include <QtGlobal>
 #include <array>
 #include <span>
@@ -11,9 +12,9 @@
 #include "sparseset.h"
 
 namespace mini {
-class Registry {
+class Registry: public QObject {
 public:
-    Registry() = default;
+    Registry(): ntityIDCounter(0), sparseSets(), deletedEntities_() {}
     template <typename... Component>
         requires std::conjunction_v<
             std::is_copy_constructible<std::decay_t<Component>>...>
@@ -257,8 +258,8 @@ public:
 private:
     quint32 getNewEntityID() { return ntityIDCounter++; }
     quint32 ntityIDCounter = 0;
-    std::vector<SparseSet> sparseSets;
-    std::vector<quint32> deletedEntities_;
+    std::vector<SparseSet> sparseSets{};
+    std::vector<quint32> deletedEntities_{};
 };
 } // namespace mini
 #endif

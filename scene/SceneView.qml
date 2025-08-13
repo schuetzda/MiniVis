@@ -98,7 +98,7 @@ Item {
                                        sceneViewContainer.selectedIndex = model.index
                                        sceneViewContainer.selectedRow = row
                                        propertiesContainer.showPropertiesContainer(
-                                           1, 1)
+                                            row)
                                        if (mouse.button === Qt.RightButton) {
                                            contextMenu.deleteEnabled = model.type !== 2
                                            const mouseYInSceneView = sceneItem.implicitHeight
@@ -157,7 +157,7 @@ Item {
             color: sceneViewContainer.propertiesColor
             property int containerHeight: 400
 
-            function showPropertiesContainer(sceneType, row) {
+            function showPropertiesContainer(row) {
                 if (!visible) {
                     propertiesContainer.SplitView.preferredHeight = containerHeight
                     propertiesContainer.height = containerHeight
@@ -165,8 +165,10 @@ Item {
                     propertiesSplitView.splitDelegateInstance.implicitHeight = 3
                     propertiesContainer.visible = true
                 }
+                matrixView.model = null
+                matrixView.model = sceneView.model.getMatrix(row)
             }
-            function hidePropertiesContainer() {
+            function hidePropertiesContainer(model) {
                 if (visible) {
                     containerHeight = propertiesContainer.SplitView.preferredHeight
                     propertiesSplitView.splitDelegateInstance.height = 0
@@ -175,36 +177,8 @@ Item {
                 }
             }
 
-            Row {
-                anchors.fill: parent
-                anchors.margins: 20
-                spacing: 8
-                layoutDirection: Qt.LeftToRight
-
-                Vector3InputForm {
-                    width: 100
-                    height: 50
-                    xValue: 0
-                    yValue: 0
-                    zValue: 0
-                    label: "Location"
-                }
-                Vector3InputForm {
-                    width: 100
-                    height: 50
-                    xValue: 0
-                    yValue: 0
-                    zValue: 0
-                    label: "Rotation"
-                }
-                Vector3InputForm {
-                    width: 100
-                    height: 50
-                    xValue: 0
-                    yValue: 0
-                    zValue: 0
-                    label: "Scale"
-                }
+            MatrixView {
+                id: matrixView
             }
         }
     }

@@ -1,4 +1,5 @@
 #include "scenetreemodel.h"
+#include <QMatrix4x4>
 
 namespace mini {
 QModelIndex SceneTreeModel::index(int row, int column, const QModelIndex& parent) const
@@ -86,5 +87,11 @@ void SceneTreeModel::addNode(quint32 type)
     sceneData.addNode(static_cast<SceneType>(type));
     endInsertRows();
     emit dataChanged(createIndex(0, 0), createIndex(lastRow-1, lastRow-1));
+}
+
+MatrixModel* SceneTreeModel::getMatrix(int row)
+{
+    QMatrix4x4* matrix = sceneData.getMatrix(row);
+    return new MatrixModel(matrix, this);
 }
 }

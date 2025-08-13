@@ -4,7 +4,7 @@ import QtQuick.Layouts 6.9
 
 Item {
     id: vector3InputForm
-    property real xValue: 0
+    property real xValue: 1
     property real yValue: 0
     property real zValue: 0
     property string label: ""

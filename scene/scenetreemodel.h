@@ -1,17 +1,19 @@
 #ifndef SCENETREEMODEL_H
 #define SCENETREEMODEL_H
 
+#include "matrixmodel.h"
 #include "scenegraph.h"
 #include <QAbstractItemModel>
 #include <QObject>
+#include "ecs/Registry.h"
 
 namespace mini {
 class SceneTreeModel : public QAbstractItemModel {
     Q_OBJECT
 
 public:
-    explicit SceneTreeModel(QObject* parent = nullptr)
-        : QAbstractItemModel(parent), sceneData(0)
+    explicit SceneTreeModel(Registry& registry, QObject* parent = nullptr)
+        : QAbstractItemModel(parent), sceneData(registry)
     {
         sceneData.addNode(SceneType::Model);
         sceneData.addNode(SceneType::Light);
@@ -25,6 +27,7 @@ public:
     QHash<int, QByteArray> roleNames() const override;
     Q_INVOKABLE void removeNode(int row);
     Q_INVOKABLE void addNode(quint32 type);
+    Q_INVOKABLE MatrixModel* getMatrix(int row);
 
 private:
     SceneData sceneData;

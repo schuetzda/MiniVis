@@ -102,6 +102,7 @@ Rectangle {
 
                                 VulkanTextureItem {
                                     id: renderer
+                                    registry: ecsRegistry
                                     anchors.fill: parent
                                 }
                             }

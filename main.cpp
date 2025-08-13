@@ -4,6 +4,7 @@
 #include <QQuickView>
 #include <QVulkanInstance>
 #include <QQmlContext>
+#include <ecs/Registry.h>
 #include "scene/scenetreemodel.h"
 
 int main(int argc, char* argv[])
@@ -23,11 +24,13 @@ int main(int argc, char* argv[])
         qFatal("Failed to create Vulkan instance");
     }
 
-    mini::SceneTreeModel model;
+    mini::Registry registry;
+    mini::SceneTreeModel model(registry);
 
     QQuickView view;
     view.setVulkanInstance(&vulkanInstance);
     view.rootContext()->setContextProperty("sceneTreeModel", &model);
+    view.rootContext()->setContextProperty("ecsRegistry", &registry);
     view.setSource(QUrl("qrc:/main.qml"));
     view.resize(1920, 1080);
     view.show();

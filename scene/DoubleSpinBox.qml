@@ -3,7 +3,7 @@ import QtQuick.Controls
 
 SpinBox {
     id: doubleSpinBox
-    value: 0
+    value: realValue * decimalFactor
     from: decimalToInt(-1000)
     to: decimalToInt(1000)
     editable: true
@@ -12,7 +12,7 @@ SpinBox {
     property int decimals: 2
     readonly property int decimalFactor: Math.pow(10, decimals)
     property real realValue: value / decimalFactor
-    property real realStepSize: 0.1
+    property real realStepSize: 1
 
     function decimalToInt(decimal) {
         return decimal * decimalFactor
