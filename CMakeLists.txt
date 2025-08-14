@@ -42,7 +42,7 @@ qt_add_qml_module(appMiniVis
     SOURCES scene/camera.h
     QML_FILES scene/SceneView.qml
     SOURCES scene/scenetreemodel.h scene/scenetreemodel.cpp
-    QML_FILES scene/Vector3InputForm.qml
+    QML_FILES
     QML_FILES scene/DoubleSpinBox.qml
     SOURCES
     QML_FILES scene/MatrixView.qml

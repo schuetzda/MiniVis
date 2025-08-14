@@ -10,9 +10,9 @@ SpinBox {
 
     property int decimals: 2
     readonly property int decimalFactor: Math.pow(10, decimals)
-    property real realValue: 0
+    property real realValue: roundDecimal(
+                                 value / decimalFactor) //This is only used to convert to text, changing this won't change the underlying value
     property real realStepSize: 1
-    property bool internalChange: false
 
     function decimalToInt(decimal) {
         return decimal * decimalFactor
@@ -23,24 +23,26 @@ SpinBox {
         return Math.round(value * factor) / factor
     }
 
-    value: roundDecimal(realValue) * decimalFactor
+    function changeValue(realValue) {
+        value = realValue * decimalFactor
+    }
+
+    value: 0
 
     onValueChanged: {
-        if (!internalChange) {
-            realValue = value / decimalFactor
-        }
-        internalChange = false
+        realValue = value / decimalFactor
     }
     onActiveFocusChanged: isActive => {
-        if (!isActive) {
-            realValue = value / decimalFactor
-        }
-    }
+                              if (!isActive) {
+                                  realValue = value / decimalFactor
+                              }
+                          }
 
     Keys.onReturnPressed: {
-        realValue = value / decimalFactor
-        doubleSpinBox.focus = false
-        valueChanged()
+
+        //realValue = value / decimalFactor
+        //doubleSpinBox.focus = false
+        //valueChanged()
     }
 
     validator: DoubleValidator {
