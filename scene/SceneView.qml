@@ -165,8 +165,7 @@ Item {
                     propertiesSplitView.splitDelegateInstance.implicitHeight = 3
                     propertiesContainer.visible = true
                 }
-                matrixView.model = null
-                matrixView.model = sceneView.model.getMatrix(row)
+                matrixView.changeModel(sceneView.model.getMatrix(row))
             }
             function hidePropertiesContainer(model) {
                 if (visible) {

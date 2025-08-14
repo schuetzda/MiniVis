@@ -7,21 +7,61 @@ Item {
     property var model: null
 
     onModelChanged: {
-        if (model) {
-            x0TextField.focus = false
-            x0TextField.focusChanged(false)
-            x0TextField.changeValue(model.element(0, 0))
-            y0TextField.changeValue(model.element(1, 0))
-            z0TextField.changeValue(model.element(2, 0))
 
-            x1TextField.changeValue(model.element(0, 1))
-            y1TextField.changeValue(model.element(1, 1))
-            z1TextField.changeValue(model.element(2, 1))
-
-            x2TextField.changeValue(model.element(0, 2))
-            y2TextField.changeValue(model.element(1, 2))
-            z2TextField.changeValue(model.element(2, 2))
+        var activeSpinBox = getActiveSpinBox()
+        if (activeSpinBox) {
+            activeSpinBox.focus = false
+            activeSpinBox.editable = false
         }
+        if (model) {
+            Qt.callLater(function () {
+                x0TextField.changeValue(model.element(0, 0))
+                y0TextField.changeValue(model.element(1, 0))
+                z0TextField.changeValue(model.element(2, 0))
+
+                x1TextField.changeValue(model.element(0, 1))
+                y1TextField.changeValue(model.element(1, 1))
+                z1TextField.changeValue(model.element(2, 1))
+
+                x2TextField.changeValue(model.element(0, 2))
+                y2TextField.changeValue(model.element(1, 2))
+                z2TextField.changeValue(model.element(2, 2))
+            })
+        }
+        if (activeSpinBox) {
+            activeSpinBox.focus = true
+            activeSpinBox.editable = true
+        }
+    }
+
+    function getActiveSpinBox() {
+        if (x0TextField.activeFocus)
+            return x0TextField
+        if (y0TextField.activeFocus)
+            return y0TextField
+        if (z0TextField.activeFocus)
+            return z0TextField
+
+        if (x1TextField.activeFocus)
+            return x1TextField
+        if (y1TextField.activeFocus)
+            return y1TextField
+        if (z1TextField.activeFocus)
+            return z1TextField
+
+        if (x2TextField.activeFocus)
+            return x2TextField
+        if (y2TextField.activeFocus)
+            return y2TextField
+        if (z2TextField.activeFocus)
+            return z2TextField
+        return null
+    }
+
+    function changeModel(newModel) {
+        //Set the model first to null to reset the SpinBox elements
+        model = null
+        model = newModel
     }
 
     Row {
@@ -45,7 +85,8 @@ Item {
                 decimals: 1
                 Layout.preferredWidth: 90
                 onRealValueChanged: {
-                    matrixView.model.setElement(0, 0, realValue)
+                    if (model)
+                        matrixView.model.setElement(0, 0, realValue)
                 }
             }
             DoubleSpinBox {
@@ -53,7 +94,8 @@ Item {
                 decimals: 1
                 Layout.preferredWidth: 90
                 onRealValueChanged: {
-                    matrixView.model.setElement(1, 0, realValue)
+                    if (model)
+                        matrixView.model.setElement(1, 0, realValue)
                 }
             }
             DoubleSpinBox {
@@ -61,7 +103,8 @@ Item {
                 decimals: 1
                 Layout.preferredWidth: 90
                 onRealValueChanged: {
-                    matrixView.model.setElement(2, 0, realValue)
+                    if (model)
+                        matrixView.model.setElement(2, 0, realValue)
                 }
             }
         }
@@ -80,7 +123,8 @@ Item {
                 decimals: 1
                 Layout.preferredWidth: 90
                 onRealValueChanged: {
-                    matrixView.model.setElement(0, 1, realValue)
+                    if (model)
+                        matrixView.model.setElement(0, 1, realValue)
                 }
             }
             DoubleSpinBox {
@@ -88,7 +132,8 @@ Item {
                 decimals: 1
                 Layout.preferredWidth: 90
                 onRealValueChanged: {
-                    matrixView.model.setElement(1, 1, realValue)
+                    if (model)
+                        matrixView.model.setElement(1, 1, realValue)
                 }
             }
             DoubleSpinBox {
@@ -96,7 +141,8 @@ Item {
                 decimals: 1
                 Layout.preferredWidth: 90
                 onRealValueChanged: {
-                    matrixView.model.setElement(2, 1, realValue)
+                    if (model)
+                        matrixView.model.setElement(2, 1, realValue)
                 }
             }
         }
@@ -115,7 +161,8 @@ Item {
                 decimals: 1
                 Layout.preferredWidth: 90
                 onRealValueChanged: {
-                    matrixView.model.setElement(0, 2, realValue)
+                    if (model)
+                        matrixView.model.setElement(0, 2, realValue)
                 }
             }
             DoubleSpinBox {
@@ -123,7 +170,8 @@ Item {
                 decimals: 1
                 Layout.preferredWidth: 90
                 onRealValueChanged: {
-                    matrixView.model.setElement(1, 2, realValue)
+                    if (model)
+                        matrixView.model.setElement(1, 2, realValue)
                 }
             }
             DoubleSpinBox {
@@ -131,7 +179,8 @@ Item {
                 decimals: 1
                 Layout.preferredWidth: 90
                 onRealValueChanged: {
-                    matrixView.model.setElement(2, 2, realValue)
+                    if (model)
+                        matrixView.model.setElement(2, 2, realValue)
                 }
             }
         }

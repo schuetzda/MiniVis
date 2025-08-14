@@ -26,24 +26,12 @@ SpinBox {
     function changeValue(realValue) {
         value = realValue * decimalFactor
     }
-
     value: 0
 
     onValueChanged: {
-        realValue = value / decimalFactor
+        realValue = roundDecimal(value / decimalFactor)
     }
-    onActiveFocusChanged: isActive => {
-                              if (!isActive) {
-                                  realValue = value / decimalFactor
-                              }
-                          }
-
-    Keys.onReturnPressed: {
-
-        //realValue = value / decimalFactor
-        //doubleSpinBox.focus = false
-        //valueChanged()
-    }
+    onActiveFocusChanged: isActive => {                          }
 
     validator: DoubleValidator {
         bottom: Math.min(doubleSpinBox.from, doubleSpinBox.to)

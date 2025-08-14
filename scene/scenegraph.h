@@ -114,6 +114,7 @@ public:
 
     void deleteNode(quint32 index)
     {
+        registry.deleteEntity(nodes[index].entityID);
         nodes.erase(nodes.begin() + index);
     }
 
