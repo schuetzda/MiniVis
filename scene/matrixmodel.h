@@ -37,7 +37,6 @@ public:
         if (!m_matrix || row < 0 || row >= 4 || column < 0 || column >= 4)
             return;
         (*m_matrix)(row, column) = value;
-        emit matrixChanged();
     }
 
 signals:

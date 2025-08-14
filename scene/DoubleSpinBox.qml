@@ -3,19 +3,44 @@ import QtQuick.Controls
 
 SpinBox {
     id: doubleSpinBox
-    value: realValue * decimalFactor
-    from: decimalToInt(-1000)
-    to: decimalToInt(1000)
+    from: decimalToInt(-10000)
+    to: decimalToInt(10000)
     editable: true
-    stepSize: realStepSize*decimalFactor
+    stepSize: realStepSize * decimalFactor
 
     property int decimals: 2
     readonly property int decimalFactor: Math.pow(10, decimals)
-    property real realValue: value / decimalFactor
+    property real realValue: 0
     property real realStepSize: 1
+    property bool internalChange: false
 
     function decimalToInt(decimal) {
         return decimal * decimalFactor
+    }
+
+    function roundDecimal(value) {
+        let factor = Math.pow(10, decimals)
+        return Math.round(value * factor) / factor
+    }
+
+    value: roundDecimal(realValue) * decimalFactor
+
+    onValueChanged: {
+        if (!internalChange) {
+            realValue = value / decimalFactor
+        }
+        internalChange = false
+    }
+    onActiveFocusChanged: isActive => {
+        if (!isActive) {
+            realValue = value / decimalFactor
+        }
+    }
+
+    Keys.onReturnPressed: {
+        realValue = value / decimalFactor
+        doubleSpinBox.focus = false
+        valueChanged()
     }
 
     validator: DoubleValidator {
@@ -27,8 +52,9 @@ SpinBox {
 
     textFromValue: function (value, locale) {
         return (value / decimalFactor).toLocaleString(locale, 'f',
-                                                            doubleSpinBox.decimals)
+                                                      doubleSpinBox.decimals)
     }
+
     valueFromText: function (text, locale) {
         return Math.round(Number.fromLocaleString(locale, text) * decimalFactor)
     }
