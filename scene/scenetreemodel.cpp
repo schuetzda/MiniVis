@@ -89,6 +89,16 @@ void SceneTreeModel::addNode(quint32 type)
     emit dataChanged(createIndex(0, 0), createIndex(lastRow-1, lastRow-1));
 }
 
+void SceneTreeModel::addModel(const QUrl &path)
+{
+    const quint32 lastRow = sceneData.size();
+    beginInsertRows(QModelIndex(), lastRow, lastRow);
+    sceneData.addModel(path.toLocalFile());
+    endInsertRows();
+    emit dataChanged(createIndex(0, 0), createIndex(lastRow-1, lastRow-1));
+
+}
+
 MatrixModel* SceneTreeModel::getMatrix(int row)
 {
     QMatrix4x4* matrix = sceneData.getMatrix(row);

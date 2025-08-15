@@ -27,7 +27,7 @@ target_link_libraries(appMiniVis PRIVATE
 qt_add_qml_module(appMiniVis
     URI MiniVis
     QML_FILES
-        main.qml
+        qml/main.qml
     RESOURCES scene/icons/camera.png scene/icons/light.png scene/icons/model.png
     NO_RESOURCE_TARGET_PATH
     SOURCES renderer/vulkanrenderer.h renderer/vulkanrenderer.cpp
@@ -40,15 +40,18 @@ qt_add_qml_module(appMiniVis
     SOURCES renderer/framegraph/rendervalues.h
     SOURCES scene/scenegraph.h
     SOURCES scene/camera.h
-    QML_FILES scene/SceneView.qml
+    QML_FILES qml/views/SceneView.qml
     SOURCES scene/scenetreemodel.h scene/scenetreemodel.cpp
     QML_FILES
-    QML_FILES scene/DoubleSpinBox.qml
+    QML_FILES qml/components/DoubleSpinBox.qml
     SOURCES
-    QML_FILES scene/MatrixView.qml
+    QML_FILES qml/views/MatrixView.qml
     SOURCES scene/matrixmodel.h
     SOURCES scene/scenecomponents.h
+    SOURCES importer/stlimporter.h
+    SOURCES importer/stlimporter.cpp
 )
+qt_add_resources(RESOURCES resources.qrc)
 set_target_properties(appMiniVis PROPERTIES
     MACOSX_BUNDLE_BUNDLE_VERSION ${PROJECT_VERSION}
     MACOSX_BUNDLE_SHORT_VERSION_STRING ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}

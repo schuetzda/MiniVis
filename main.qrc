@@ -1,7 +1,0 @@
-<RCC>
-    <qresource prefix="/">
-        <file>squircle.vert.spv</file>
-        <file>squircle.frag.spv</file>
-        <file>main.qml</file>
-    </qresource>
-</RCC>

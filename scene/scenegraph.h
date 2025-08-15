@@ -2,6 +2,7 @@
 #define SCENEGRAPH_H
 
 #include "ecs/Registry.h"
+#include "importer/stlimporter.h"
 #include "scenecomponents.h"
 #include <qtypes.h>
 #include <scene/camera.h>
@@ -41,20 +42,18 @@ public:
     void addNode(SceneType type)
     {
         switch (type) {
-        case SceneType::Light:
-        {
-            lightCount++;
+        case SceneType::Light: {
+            lightId++;
             quint32 lightEntity = registry.registerEntity();
             registry.emplace<RenderLight>(lightEntity);
-            nodes.emplace_back(QString("Light%1").arg(lightCount), lightEntity, type);
+            nodes.emplace_back(QString("Light%1").arg(lightId), lightEntity, type);
             break;
         }
-        case SceneType::Model:
-        {
-            modelCount++;
+        case SceneType::Model: {
+            modelId++;
             quint32 modelEntity = registry.registerEntity();
             registry.emplace<RenderModel>(modelEntity);
-            nodes.emplace_back(QString("Model%1").arg(modelCount), modelEntity, type);
+            nodes.emplace_back(QString("Model%1").arg(modelId), modelEntity, type);
             break;
         }
         case SceneType::Camera:
@@ -66,6 +65,16 @@ public:
         }
     }
 
+    void addModel(const QString& path)
+    {
+        modelId++;
+        quint32 modelEntity = registry.registerEntity();
+        registry.emplace<RenderModel>(modelEntity);
+        nodes.emplace_back(QString("Model%1").arg(modelId), modelEntity, SceneType::Model);
+        RenderModel* currentModel = registry.getComponent<RenderModel>(modelEntity);
+        mini::importer::loadBinaryStl(path, currentModel->mesh);
+    }
+
     const SceneNode* get(quint32 index) const
     {
         if (index >= nodes.size())
@@ -75,27 +84,23 @@ public:
 
     QMatrix4x4* getMatrix(quint32 index)
     {
-        if (index > size())
-        {
+        if (index > size()) {
             qWarning() << "Scenegraph getMatrix: index out of bounds";
             return nullptr;
         }
         quint32 entityID = nodes[index].entityID;
         switch (nodes[index].type) {
-        case SceneType::Light:
-        {
+        case SceneType::Light: {
             RenderLight* light = registry.getComponent<RenderLight>(entityID);
             return &light->transform;
             break;
         }
-        case SceneType::Model:
-        {
+        case SceneType::Model: {
             RenderModel* model = registry.getComponent<RenderModel>(entityID);
             return &model->transform;
             break;
         }
-        case SceneType::Camera:
-        {
+        case SceneType::Camera: {
             QuaternionCamera* camera = registry.getComponent<QuaternionCamera>(entityID);
             return camera->getViewPtr();
             break;
@@ -121,8 +126,8 @@ public:
 private:
     QString name;
     std::vector<SceneNode> nodes {};
-    quint32 modelCount { 0 };
-    quint32 lightCount { 0 };
+    quint32 modelId { 0 };
+    quint32 lightId { 0 };
     Registry& registry;
 };
 }

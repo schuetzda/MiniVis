@@ -4,6 +4,8 @@
 #include <QQuickView>
 #include <QVulkanInstance>
 #include <QQmlContext>
+#include <QDir>
+#include <QDebug>
 #include <ecs/Registry.h>
 #include "scene/scenetreemodel.h"
 
@@ -31,7 +33,7 @@ int main(int argc, char* argv[])
     view.setVulkanInstance(&vulkanInstance);
     view.rootContext()->setContextProperty("sceneTreeModel", &model);
     view.rootContext()->setContextProperty("ecsRegistry", &registry);
-    view.setSource(QUrl("qrc:/main.qml"));
+    view.setSource(QUrl("qrc:/qml/main.qml"));
     view.resize(1920, 1080);
     view.show();
 

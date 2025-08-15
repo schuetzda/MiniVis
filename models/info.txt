@@ -1,0 +1,2 @@
+The following stl files are acquired over https://www.thingiverse.com and are under the following licenses:
+- DBenchy.stl (https://www.thingiverse.com/thing:763622): Creative Commons - Public Domain Dedication

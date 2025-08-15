@@ -5,6 +5,7 @@
 #include "scenegraph.h"
 #include <QAbstractItemModel>
 #include <QObject>
+#include <QUrl>
 #include "ecs/Registry.h"
 
 namespace mini {
@@ -27,6 +28,7 @@ public:
     QHash<int, QByteArray> roleNames() const override;
     Q_INVOKABLE void removeNode(int row);
     Q_INVOKABLE void addNode(quint32 type);
+    Q_INVOKABLE void addModel(const QUrl& path);
     Q_INVOKABLE MatrixModel* getMatrix(int row);
 
 private:
