@@ -43,17 +43,15 @@ public:
     {
         switch (type) {
         case SceneType::Light: {
-            lightId++;
             quint32 lightEntity = registry.registerEntity();
             registry.emplace<RenderLight>(lightEntity);
-            nodes.emplace_back(QString("Light%1").arg(lightId), lightEntity, type);
+            nodes.emplace_back(QString("Light"), lightEntity, type);
             break;
         }
         case SceneType::Model: {
-            modelId++;
             quint32 modelEntity = registry.registerEntity();
             registry.emplace<RenderModel>(modelEntity);
-            nodes.emplace_back(QString("Model%1").arg(modelId), modelEntity, type);
+            nodes.emplace_back(QString("Model"), modelEntity, type);
             break;
         }
         case SceneType::Camera:
@@ -67,10 +65,9 @@ public:
 
     void addModel(const QString& path)
     {
-        modelId++;
         quint32 modelEntity = registry.registerEntity();
         registry.emplace<RenderModel>(modelEntity);
-        nodes.emplace_back(QString("Model%1").arg(modelId), modelEntity, SceneType::Model);
+        nodes.emplace_back(QString("Model"), modelEntity, SceneType::Model);
         RenderModel* currentModel = registry.getComponent<RenderModel>(modelEntity);
         mini::importer::loadBinaryStl(path, currentModel->mesh);
     }
@@ -135,8 +132,6 @@ public:
 private:
     QString name;
     std::vector<SceneNode> nodes {};
-    quint32 modelId { 0 };
-    quint32 lightId { 0 };
     Registry& registry;
 };
 }

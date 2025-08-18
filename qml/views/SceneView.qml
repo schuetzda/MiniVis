@@ -132,6 +132,10 @@ Item {
                                                     text)
                                         sceneItem.editing = false
                                     }
+                                    Keys.onEscapePressed: {
+                                        sceneItem.editing = false
+                                    }
+
                                     onEditingFinished: sceneItem.editing = false
                                 }
                             }

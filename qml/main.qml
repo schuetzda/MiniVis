@@ -4,6 +4,7 @@ import QtQuick.Layouts
 import QtQuick.Controls.Material
 
 import MiniVis
+
 Rectangle {
     anchors.fill: parent
     Material.theme: Material.Dark
@@ -49,15 +50,7 @@ Rectangle {
                             anchors.bottom: parent.bottom
                             id: bar
                             TabButton {
-                                text: qsTr("Model1")
-                                width: 70
-                            }
-                            TabButton {
-                                text: qsTr("Model2")
-                                width: 70
-                            }
-                            TabButton {
-                                text: qsTr("Model3")
+                                text: qsTr("Scene1")
                                 width: 70
                             }
                         }

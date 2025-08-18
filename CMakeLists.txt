@@ -26,8 +26,7 @@ target_link_libraries(appMiniVis PRIVATE
 # Add the unified resource file with QML and shaders
 qt_add_qml_module(appMiniVis
     URI MiniVis
-    QML_FILES
-        qml/main.qml
+    QML_FILES qml/main.qml qml/components/DoubleSpinBox.qml qml/views/SceneView.qml qml/views/MatrixView.qml
     RESOURCES scene/icons/camera.png scene/icons/light.png scene/icons/model.png
     NO_RESOURCE_TARGET_PATH
     SOURCES renderer/vulkanrenderer.h renderer/vulkanrenderer.cpp
@@ -40,12 +39,7 @@ qt_add_qml_module(appMiniVis
     SOURCES renderer/framegraph/rendervalues.h
     SOURCES scene/scenegraph.h
     SOURCES scene/camera.h
-    QML_FILES qml/views/SceneView.qml
     SOURCES scene/scenetreemodel.h scene/scenetreemodel.cpp
-    QML_FILES
-    QML_FILES qml/components/DoubleSpinBox.qml
-    SOURCES
-    QML_FILES qml/views/MatrixView.qml
     SOURCES scene/matrixmodel.h
     SOURCES scene/scenecomponents.h
     SOURCES importer/stlimporter.h
