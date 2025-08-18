@@ -54,11 +54,21 @@ QVariant SceneTreeModel::data(const QModelIndex& index, int role) const
         }
         break;
     case Qt::UserRole + 2:
-            return static_cast<int>(node->type);
-            break;
+        return static_cast<int>(node->type);
+        break;
     }
 
     return QVariant();
+}
+
+bool SceneTreeModel::setData(const QModelIndex& index, const QVariant& value, int role)
+{
+    if (!index.isValid() || role != Qt::EditRole)
+    {
+        return false;
+    }
+
+    return sceneData.setName(index.row(), value.toString());
 }
 
 QHash<int, QByteArray> SceneTreeModel::roleNames() const
@@ -71,7 +81,7 @@ QHash<int, QByteArray> SceneTreeModel::roleNames() const
 void SceneTreeModel::removeNode(int row)
 {
     if (row < 0 || row >= sceneData.size()) {
-        qWarning() << "Trying to delete a node out of index range"<< row;
+        qWarning() << "Trying to delete a node out of index range" << row;
         return;
     }
 
@@ -86,17 +96,16 @@ void SceneTreeModel::addNode(quint32 type)
     beginInsertRows(QModelIndex(), lastRow, lastRow);
     sceneData.addNode(static_cast<SceneType>(type));
     endInsertRows();
-    emit dataChanged(createIndex(0, 0), createIndex(lastRow-1, lastRow-1));
+    emit dataChanged(createIndex(0, 0), createIndex(lastRow - 1, lastRow - 1));
 }
 
-void SceneTreeModel::addModel(const QUrl &path)
+void SceneTreeModel::addModel(const QUrl& path)
 {
     const quint32 lastRow = sceneData.size();
     beginInsertRows(QModelIndex(), lastRow, lastRow);
     sceneData.addModel(path.toLocalFile());
     endInsertRows();
-    emit dataChanged(createIndex(0, 0), createIndex(lastRow-1, lastRow-1));
-
+    emit dataChanged(createIndex(0, 0), createIndex(lastRow - 1, lastRow - 1));
 }
 
 MatrixModel* SceneTreeModel::getMatrix(int row)

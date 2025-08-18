@@ -50,8 +50,7 @@ Item {
                 acceptedButtons: Qt.RightButton
                 onClicked: mouse => {
                                if (mouse.button === Qt.RightButton) {
-                                   contextMenu.deleteEnabled = false
-                                   contextMenu.popup(mouse.x, mouse.y)
+                                   outerContextMenu.popup(mouse.x, mouse.y)
                                }
                            }
             }
@@ -67,11 +66,20 @@ Item {
                     implicitWidth: sceneView.width
                     implicitHeight: 30
                     required property int row
+                    property bool editing: false
 
                     Rectangle {
                         anchors.fill: parent
                         color: sceneViewContainer.selectedIndex
                                === model.index ? "#444" : "transparent"
+
+                        // Color changed => col
+                        onColorChanged: {
+                            if (sceneViewContainer.selectedIndex !== model.index) {
+                                editing = false
+                            }
+                        }
+
                         Row {
                             leftPadding: 5
                             anchors.verticalCenter: parent.verticalCenter
@@ -82,11 +90,50 @@ Item {
                                 height: 24
                             }
 
-                            Text {
+                            Loader {
+                                sourceComponent: sceneItem.editing ? editNodeComponent : viewNodeComponent
+                            }
+
+
+                            /*TextField {
                                 text: model.display
-                                color: "white"
+                                //color: "white"
                                 font.pixelSize: 18
                                 font.bold: true
+                            }*/
+                            Component {
+                                id: viewNodeComponent
+                                Text {
+                                    anchors.verticalCenter: parent.verticalCenter
+                                    text: model.display
+                                    color: "white"
+                                    font.pixelSize: 18
+                                    font.bold: true
+                                }
+                            }
+
+                            Component {
+                                id: editNodeComponent
+                                TextField {
+                                    anchors.verticalCenter: parent.verticalCenter
+                                    text: model.display
+                                    font.pixelSize: 18
+                                    font.bold: true
+                                    focus: true
+
+                                    Component.onCompleted: {
+                                        forceActiveFocus()
+                                    }
+
+                                    Keys.onReturnPressed: {
+                                        sceneTreeModel.setData(
+                                                    sceneView.model.index(row,
+                                                                          0),
+                                                    text)
+                                        sceneItem.editing = false
+                                    }
+                                    onEditingFinished: sceneItem.editing = false
+                                }
                             }
                         }
                     }
@@ -101,13 +148,48 @@ Item {
                                        propertiesContainer.showPropertiesContainer(
                                            row)
                                        if (mouse.button === Qt.RightButton) {
-                                           contextMenu.deleteEnabled = model.type !== 2
-                                           const mouseYInSceneView = sceneItem.implicitHeight
-                                           * row + mouse.y
-                                           contextMenu.popup(mouse.x,
-                                                             mouseYInSceneView)
+                                           itemContextMenu.deleteEnabled = model.type
+                                           !== 2 // Camera can't be deleted
+                                           itemContextMenu.popup(mouse.x,
+                                                                 mouse.y)
                                        }
                                    }
+                    }
+                    Menu {
+                        id: itemContextMenu
+                        property bool deleteEnabled: true
+                        Menu {
+                            title: "Add Node:"
+                            MenuItem {
+                                text: "Model..."
+                                onTriggered: {
+                                    fileDialog.open()
+                                }
+                            }
+                            MenuItem {
+                                text: "Light"
+                                onTriggered: {
+                                    sceneTreeModel.addNode(1)
+                                }
+                            }
+                        }
+                        MenuItem {
+                            text: "Edit"
+                            onTriggered: {
+                                sceneItem.editing = true
+                            }
+                        }
+
+                        MenuItem {
+                            text: "Delete"
+                            enabled: itemContextMenu.deleteEnabled
+                            onTriggered: {
+                                sceneTreeModel.removeNode(
+                                            sceneViewContainer.selectedRow)
+                                sceneViewContainer.selectedIndex = -1
+                                propertiesContainer.hidePropertiesContainer()
+                            }
+                        }
                     }
                 }
                 // Handle mouse click not directly on a scene item
@@ -119,14 +201,12 @@ Item {
                     }
                 }
             }
-
             Menu {
-                id: contextMenu
-                property bool deleteEnabled: true
+                id: outerContextMenu
                 Menu {
                     title: "Add Node:"
                     MenuItem {
-                        text: "Model"
+                        text: "Model..."
                         onTriggered: {
                             fileDialog.open()
                         }
@@ -138,27 +218,17 @@ Item {
                         }
                     }
                 }
-                MenuItem {
-                    text: "Delete"
-                    enabled: contextMenu.deleteEnabled
-                    onTriggered: {
-                        sceneTreeModel.removeNode(
-                                    sceneViewContainer.selectedRow)
-                        sceneViewContainer.selectedIndex = -1
-                        propertiesContainer.hidePropertiesContainer()
-                    }
-                }
-                FileDialog {
-                    id: fileDialog
-                    title: "Select STL File"
-                    currentFolder: ""
-                    nameFilters: ["STL files (*.stl)"]
+            }
+            FileDialog {
+                id: fileDialog
+                title: "Select STL File"
+                currentFolder: ""
+                nameFilters: ["STL files (*.stl)"]
 
-                    onAccepted: {
-                        if (selectedFile) {
-                            sceneTreeModel.addModel(selectedFile)
-                            console.log("Selected file:", selectedFile)
-                        }
+                onAccepted: {
+                    if (selectedFile) {
+                        sceneTreeModel.addModel(selectedFile)
+                        console.log("Selected file:", selectedFile)
                     }
                 }
             }

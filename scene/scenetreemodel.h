@@ -25,6 +25,7 @@ public:
     int rowCount(const QModelIndex& index) const override;
     int columnCount(const QModelIndex& index) const override;
     QVariant data(const QModelIndex& index, int role) const override;
+    bool setData(const QModelIndex& index, const QVariant& value, int role = Qt::EditRole) override;
     QHash<int, QByteArray> roleNames() const override;
     Q_INVOKABLE void removeNode(int row);
     Q_INVOKABLE void addNode(quint32 type);

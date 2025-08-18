@@ -75,6 +75,15 @@ public:
         mini::importer::loadBinaryStl(path, currentModel->mesh);
     }
 
+    bool setName(quint32 index, const QString& name) {
+        if (index >= nodes.size())
+        {
+            return false;
+        }
+        nodes[index].name = name;
+        return true;
+    }
+
     const SceneNode* get(quint32 index) const
     {
         if (index >= nodes.size())
