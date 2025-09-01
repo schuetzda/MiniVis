@@ -3,11 +3,7 @@
 namespace mini {
 
 void VulkanRenderer::init(VkPhysicalDevice physDevice, VkDevice device,
-                          QVulkanFunctions *f, QVulkanDeviceFunctions *df, FrameGraph frameGraph) {
-    for (FrameGraphNode node: frameGraph.nodes) {
-
-    }
-}
+                          QVulkanFunctions *f, QVulkanDeviceFunctions *df, FrameGraph frameGraph) {}
 
 void VulkanRenderer::draw(QVulkanInstance *instance,
                           VkPhysicalDevice physDevice, VkDevice device,
