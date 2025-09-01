@@ -1,12 +1,12 @@
 #ifndef FRAMEGRAPH_H
 #define FRAMEGRAPH_H
+#include "renderer/types/rendercycle.h"
+#include "rendervalues.h"
 #include "util/stringviewhash.h"
+#include <bits/unique_ptr.h>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#include "rendervalues.h"
-#include "renderer/types/rendercycle.h"
-#include <bits/unique_ptr.h>
 
 namespace mini {
 
@@ -48,16 +48,18 @@ struct FrameGraphInput {
 };
 
 struct FrameGraphNode {
+    std::unique_ptr<RenderCycle> cycle;
     std::vector<std::string> inputs {};
     std::vector<std::string> attachments {};
     std::string depthAttachment {};
 
     FrameGraphNode() = default;
     FrameGraphNode(
+        std::unique_ptr<RenderCycle> cycle_,
         std::vector<std::string> inputs_,
         std::vector<std::string> attachments_,
         std::string depthAttachment_)
-        : inputs(std::move(inputs_))
+        : cycle(std::move(cycle_)), inputs(std::move(inputs_))
         , attachments(std::move(attachments_))
         , depthAttachment(std::move(depthAttachment_))
     {
@@ -67,7 +69,7 @@ struct FrameGraphNode {
 struct FrameGraph {
     FrameGraph() = default;
     std::vector<FrameGraphNode> nodes {};
-    //std::vector<std::unique_ptr<RenderCycle>> cycles {};
+    // std::vector<std::unique_ptr<RenderCycle>> cycles {};
     std::unordered_map<std::string, FrameGraphResource, StringViewHash,
         std::equal_to<>>
         resources {};

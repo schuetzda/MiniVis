@@ -3,15 +3,16 @@
 
 #include "framegraph.h"
 #include <vector>
+#include <renderer/types/rendercycle.h>
 
 namespace mini {
 class FrameGraphBuilder {
 public:
-    FrameGraphBuilder();
+    FrameGraphBuilder() = default;
 
-    FrameGraphBuilder& addNode(const std::vector<std::string>& inputs, const std::vector<std::string>& renderAttachments, const std::string& depthAttachment = "")
+    FrameGraphBuilder& addNode(std::unique_ptr<RenderCycle> cycle, const std::vector<std::string>& inputs, const std::vector<std::string>& renderAttachments, const std::string& depthAttachment = "")
     {
-        frameGraph.nodes.emplace_back(inputs, renderAttachments, depthAttachment);
+        frameGraph.nodes.emplace_back(std::move(cycle), inputs, renderAttachments, depthAttachment);
         return *this;
     }
 
@@ -21,7 +22,7 @@ public:
         return *this;
     }
 
-    FrameGraphBuilder& addAttachment(const std::string& id, Format format)
+    FrameGraphBuilder& addAttachment(const std::string& id, Format format, const RenderCycle& cycle)
     {
         frameGraph.attachments.emplace(id, format);
         return *this;
@@ -29,13 +30,13 @@ public:
 
     FrameGraph build()
     {
-        // FrameGraphNodes and RenderCycles need to have the same size, since they are in a 1:1 relationship
-        //Q_ASSERT(frameGraph.nodes.size() == frameGraph.cycles.size());
-        return frameGraph;
+        FrameGraph result = std::move(frameGraph);
+        frameGraph = FrameGraph();
+        return result;
     }
 
 private:
-    FrameGraph frameGraph;
+    FrameGraph frameGraph{};
 };
 } // namespace mini
 #endif // FRAMEGRAPHBUILDER_H

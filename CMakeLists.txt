@@ -33,7 +33,7 @@ qt_add_qml_module(appMiniVis
     SOURCES renderer/framegraph/framegraph.h renderer/framegraph/framegraphbuilder.h
     SOURCES util/stringviewhash.h
     SOURCES ecs/componenttable.h ecs/componentview.h ecs/registry.h ecs/sparseset.h ecs/typeidgenerator.h
-    SOURCES renderer/types/rendererfactory.h renderer/types/rendercycle.h
+    SOURCES renderer/types/rendererfactory.h renderer/types/rendercycle.h renderer/types/shaderdescription.h
     SOURCES renderer/types/simpleforward/simpleforwardrenderer.h
     SOURCES renderer/wrapper/pipeline.h
     SOURCES renderer/framegraph/rendervalues.h
@@ -44,6 +44,7 @@ qt_add_qml_module(appMiniVis
     SOURCES scene/scenecomponents.h
     SOURCES importer/stlimporter.h
     SOURCES importer/stlimporter.cpp
+    SOURCES
 )
 qt_add_resources(RESOURCES resources.qrc)
 set_target_properties(appMiniVis PROPERTIES

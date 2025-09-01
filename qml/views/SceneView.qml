@@ -94,13 +94,6 @@ Item {
                                 sourceComponent: sceneItem.editing ? editNodeComponent : viewNodeComponent
                             }
 
-
-                            /*TextField {
-                                text: model.display
-                                //color: "white"
-                                font.pixelSize: 18
-                                font.bold: true
-                            }*/
                             Component {
                                 id: viewNodeComponent
                                 Text {
@@ -123,6 +116,7 @@ Item {
 
                                     Component.onCompleted: {
                                         forceActiveFocus()
+                                        selectAll()
                                     }
 
                                     Keys.onReturnPressed: {
@@ -178,7 +172,7 @@ Item {
                             }
                         }
                         MenuItem {
-                            text: "Edit"
+                            text: "Change Name"
                             onTriggered: {
                                 sceneItem.editing = true
                             }
